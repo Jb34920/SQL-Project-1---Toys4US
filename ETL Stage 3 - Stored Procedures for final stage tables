@@ -1,0 +1,37 @@
+-- Created stored procedure which returns the final stage tables. --
+
+-- Stored Procedure: TillType --
+CREATE PROCEDURE sp_tTillType
+AS
+
+SELECT * FROM tTillType
+
+-- Stored Procedure: Purchase --
+CREATE PROCEDURE sp_tPurchase
+AS
+
+SELECT * FROM tPurchase
+
+-- Stored Procedure: Product --
+CREATE PROCEDURE sp_tProduct
+AS
+
+SELECT * FROM tProduct
+
+-- Stored Procedure: PaymentMethod --
+CREATE PROCEDURE sp_tPaymentMethod
+AS
+
+SELECT * FROM tPaymentMethod
+
+-- Stored Procedure: Customer --
+CREATE PROCEDURE sp_tCustomer
+AS
+
+SELECT * FROM tCustomer
+
+-- Stored Procedure: BankCardCharge --
+CREATE PROCEDURE sp_tBankCardCharge
+AS
+
+SELECT * FROM tBankCardCharge

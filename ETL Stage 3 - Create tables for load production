@@ -1,0 +1,21 @@
+-- Created the Stage 3 tables for load production. --
+
+USE DABootcamp
+GO
+-- Product Table --
+DROP TABLE IF EXISTS tProduct
+
+SELECT * INTO tProduct FROM tProduct_Import
+SELECT * FROM tProduct
+
+-- Customer Table -- 
+DROP TABLE IF EXISTS tCustomer
+
+SELECT * INTO tCustomer FROM tCustomer_ETL
+SELECT * FROM tCustomer
+
+-- Purchase Table--
+DROP TABLE IF EXISTS tPurchase
+
+SELECT * INTO tPurchase FROM tPurchase_Import
+SELECT * FROM tPurchase
