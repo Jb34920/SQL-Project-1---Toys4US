@@ -1,0 +1,55 @@
+USE DABootcamp
+GO
+
+DROP TABLE IF EXISTS tCustomer_ETL
+
+-- Created a new copy of the customer import table and named it tCustomer_ETL --
+SELECT * INTO tCustomer_ETL FROM tCustomer_Import
+
+-- Added a FirstName field with max size of 30 characters accepting NULL values --
+ALTER TABLE tCustomer_ETL ADD FirstName NVARCHAR(30) NULL
+
+-- Added a Surname field with max size of 30 characters accepting NULL values --
+ALTER TABLE tCustomer_ETL ADD Surname NVARCHAR(30) NULL
+
+-- Added a Address1 field with max size of 100 characters accepting NULL values --
+ALTER TABLE tCustomer_ETL ADD Address1 NVARCHAR(100) NULL
+
+-- Added a PostCode field with max size of 30 characters accepting NULL values --
+ALTER TABLE tCustomer_ETL ADD PostCode NVARCHAR(12) NULL
+
+-- Added an Age field as an interger type accepting NULL values --
+ALTER TABLE tCustomer_ETL ADD Age INT NULL
+
+-- Deleted any spaces at the beginning of the FullAddress Field --
+UPDATE tCustomer_ETL SET FullAddress = LTRIM(FullAddress)
+
+-- Deleted any spaces at the end of the FullAddress Field --
+UPDATE tCustomer_ETL SET FullAddress = RTRIM(FullAddress)
+
+-- CHARINDEX returned the position of the comma in the string. SUBSTRING will return from character --
+-- 1 to the length of characters before the comma and update the contents of the FirstName --
+UPDATE tCustomer_ETL SET FirstName = SUBSTRING(FullName,1,CHARINDEX(',',FullName)-1)
+
+-- Similar manner to FirstName but only after the comma string. Used 100 as max possible field length -- 
+UPDATE tCustomer_ETL SET Surname = SUBSTRING(FullName,CHARINDEX(',',FullName)+1,100)
+
+-- Split FullAddress likewise in Address1 field
+UPDATE tCustomer_ETL SET Address1 = SUBSTRING(FullAddress,1,CHARINDEX(',',FullAddress)-1)
+
+-- And PostCode field. Used +2 to account for the space after the comma. --
+UPDATE tCustomer_ETL SET PostCode = SUBSTRING(FullAddress,CHARINDEX(',',FullAddress)+2,100)
+
+-- Calculated the customer age as of today. GETDATE() returns Today --
+UPDATE tCustomer_ETL SET AGE = DATEDIFF(YEAR,DOB,GETDATE())
+
+-- Added the missing zero at the start of the telephone number --
+UPDATE tCustomer_ETL SET Telephone = '0'+Telephone WHERE LEN(Telephone) <=10
+
+-- Converted Gender to Male/Female from M/F. The field length was 1 character and --
+-- was extended to 6 characters. --
+ALTER TABLE tCustomer_ETL ALTER COLUMN Gender NVARCHAR(6)
+UPDATE tCustomer_ETL SET Gender = 'Male' WHERE Gender = 'M'
+UPDATE tCustomer_ETL SET Gender = 'Female' WHERE Gender = 'F'
+
+SELECT * FROM tCustomer_ETL

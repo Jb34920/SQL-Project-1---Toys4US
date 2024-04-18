@@ -1,0 +1,99 @@
+-- Created Stored Procedures --
+-- This procedure will delete data from the tables and re-insert new data again. --
+
+
+-- Stored Procedure: BankCardCharge -- 
+CREATE PROCEDURE sp_tBankCardCharge_Data_Update AS
+
+DELETE tBankCardCharge
+
+INSERT INTO tBankCardCharge (CreditCardName, BankCardCharge) VALUES ('Visa',0.015)
+INSERT INTO tBankCardCharge (CreditCardName, BankCardCharge) VALUES ('Mastercard',0.018)
+INSERT INTO tBankCardCharge (CreditCardName, BankCardCharge) VALUES ('Other',0.005)
+INSERT INTO tBankCardCharge (CreditCardName, BankCardCharge) VALUES ('Cash',0)
+
+-- Stored Procedure: PaymentMethod --
+CREATE PROCEDURE sp_tPaymentMethod_Data_Update AS
+
+DELETE tPaymentMethod
+
+
+INSERT INTO tPaymentMethod (PaymentMethod) VALUES ('Cash')
+INSERT INTO tPaymentMethod (PaymentMethod) VALUES ('Debit Card')
+INSERT INTO tPaymentMethod (PaymentMethod) VALUES ('Credit Card')
+
+-- Stored Procedure: TillType --
+CREATE PROCEDURE sp_tTillType_Data_Update AS
+
+DELETE tTillType
+
+INSERT INTO tTillType(TillDescription) VALUES ('Self Checkout')
+INSERT INTO tTillType(TillDescription) VALUES ('Staff Checkout')
+INSERT INTO tTillType(TillDescription) VALUES ('Scanner')
+
+-- This procedure will update the selected table. However, if a user enters the --
+-- wrong table name, the store procedure will give the user an error message. --
+USE DABootcamp
+GO
+
+CREATE PROCEDURE sp_ResetTables
+    @tablename NVARCHAR(255) = NULL
+AS
+
+DECLARE @error NVARCHAR(255) = 'Error Message: Please check the table name and try again!'
+
+BEGIN 
+    IF @tablename = 'tBankCardCharge'
+        BEGIN
+            EXECUTE sp_tBankCardCharge_Data_Update
+            SELECT * FROM tBankCardCharge
+        END
+    ELSE
+    IF @tablename = 'tPaymentMethod'
+        BEGIN 
+            EXECUTE sp_tPaymentMethod_Data_Update
+            SELECT * FROM tPaymentMethod
+        END
+    ELSE
+    IF @tablename = 'tTillType'
+        BEGIN 
+            EXECUTE sp_tTillType_Data_Update
+            SELECT * FROM tTillType
+        END
+    ELSE
+        PRINT @error
+END
+
+-- Based on the previous stored procedure, this stored procedure will allow --
+-- the user to verify the data at the end of the update. -- 
+USE DABootcamp
+GO
+
+CREATE PROCEDURE sp_ConfirmResetTables
+    @tablename NVARCHAR(255) = NULL,
+    @verify bit = FALSE
+AS
+
+DECLARE @error NVARCHAR(255) = 'Error Message: Please check the table name and try again!'
+
+BEGIN 
+    IF @tablename = 'tBankCardCharge'
+        BEGIN
+            EXECUTE sp_tBankCardCharge_Data_Update
+            IF @verify = 'TRUE' SELECT * FROM tBankCardCharge
+       END
+    ELSE
+    IF @tablename = 'tPaymentMethod'
+        BEGIN 
+            EXECUTE sp_tPaymentMethod_Data_Update
+            IF @verify = 'TRUE' SELECT * FROM tPaymentMethod
+        END
+    ELSE
+    IF @tablename = 'tTillType'
+        BEGIN 
+            EXECUTE sp_tTillType_Data_Update
+            IF @verify = 'TRUE' SELECT * FROM tTillType
+        END
+    ELSE
+        PRINT @error
+END
